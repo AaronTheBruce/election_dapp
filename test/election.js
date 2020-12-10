@@ -24,4 +24,15 @@ contract("Election", (accounts) => {
     assert.equal(candidate2[1], "Buddy", "contains the correct name");
     assert.equal(candidate2[2], 0, "contains the correct votes count");
   });
+
+  it("allows a voter to cast a vote", async () => {
+    candidateId = 1; // Guy's Id
+    election.vote(candidateId, { from: accounts[0] });  // a vote cast for the candidate
+    let voted = await election.voters(accounts[0]);   // obtain a boolean for if the account is mapped as a voter
+    let candidate = await election.candidates(candidateId); // obtain the candidate
+    let voteCount = candidate[2]; // obtain the voteCount of the candidate
+    assert(voted, "the voter maked as voted");  // voted should be a boolean value of true
+    assert.equal(voteCount, 1, "increments the candidate's vote count");  // the voteCount should have changed from 0 to 1
+  });
+
 });

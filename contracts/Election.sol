@@ -17,6 +17,7 @@ contract Election {
   */
   //      key       value    visibility
   mapping(uint => Candidate) public candidates;
+  mapping(address => bool) public voters;
 
   /* Store the total Number of Candidates */
   uint public candidatesCount;
@@ -27,9 +28,24 @@ contract Election {
     candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);  // using the new number as an id, assign to the candidates map a new candidate using the contructor
   }
 
+  function vote(uint _candidateId) public {
+    // require that they haven't voted before
+    require(!voters[msg.sender]);
+
+    // require a valid candidate
+    require(_candidateId > 0 && _candidateId <= candidatesCount);
+
+    // record that voter has voted
+    voters[msg.sender] = true;
+
+    // add a vote to the chosen candidate
+    candidates[_candidateId].voteCount++;
+
+  }
+
   // Constructor
   constructor () public {
-    addCandidate("Guy"); 
+    addCandidate("Guy");
     addCandidate("Buddy");
   }
 
